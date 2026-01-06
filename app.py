@@ -350,7 +350,7 @@ def main():
 
     # Main application interface
     # 1. Display your branded logo
-    st.image("Color logo with background.png", width=50)  # <--- Change filename/width as needed
+    st.image("Color logo with background.png", width=70)  # <--- Change filename/width as needed
 
     # 2. Title (I removed the emoji since you have a logo now)
     st.title("Research Analysis Portal")
