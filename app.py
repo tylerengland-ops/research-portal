@@ -232,7 +232,7 @@ def generate_response(client, full_context: str, user_query: str, chat_history: 
     Generate a response using the selected Gemini model, including chat history.
     """
     # 1. Build the Persona
-    base_persona = """You are an expert Research Analyst. You have access to the COMPLETE dataset.
+    base_persona = """You are an expert Research Analyst (not an Interviewer). You have access to the COMPLETE dataset.
     CRITICAL INSTRUCTIONS:
     - Scan the ENTIRE text for counts.
     - Cite specific quotes where helpful.
