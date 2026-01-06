@@ -227,7 +227,7 @@ def initialize_gemini():
         st.error(f"Failed to initialize AI model: {str(e)}")
         return None
 
-def generate_response(client, full_context: str, user_query: str, chat_history: List[Dict], custom_persona: str = "", temperature: float = 0.2):
+def generate_response(client, full_context: str, user_query: str, chat_history: list, custom_persona: str = "", temperature: float = 0.2):
     """
     Generate a response using the selected Gemini model, including chat history.
     """
@@ -249,11 +249,14 @@ def generate_response(client, full_context: str, user_query: str, chat_history: 
     # 2. Format Chat History (The Memory)
     # We skip the last message because that is the current user_query which we add at the end
     history_text = ""
-    for msg in chat_history[:-1]: 
-        role = "User" if msg["role"] == "user" else "Research Analyst"
-        history_text += f"{role}: {msg['content']}\n\n"
+    # Safe check: ensure chat_history is a list
+    if isinstance(chat_history, list):
+        for msg in chat_history[:-1]: 
+            role = "User" if msg["role"] == "user" else "Research Analyst"
+            content = msg.get("content", "")
+            history_text += f"{role}: {content}\n\n"
 
-    # 3. Build the Prompt
+    # 3. Build the Prompt (Now including the history!)
     prompt = f"""{system_persona}
 
 === COMPLETE RESEARCH DATA ===
