@@ -235,7 +235,7 @@ def generate_response(client, full_context: str, user_query: str, chat_history: 
     base_persona = """You are an expert Research Analyst. You have access to the COMPLETE dataset.
     CRITICAL INSTRUCTIONS:
     - Scan the ENTIRE text for counts.
-    - Cite specific quotes.
+    - Cite specific quotes where helpful.
     - If you cannot find info, state that.
     - If asked for a count, you MUST scan the ENTIRE text to find EVERY instance.
     - Do not estimate.
