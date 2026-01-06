@@ -27,12 +27,8 @@ import docx
 # ============================================================================
 
 # Multi-tenant client database: Maps client_id to Google Drive Folder ID
-CLIENT_DATABASE = {
-    "alpha": "1h0_hqkQPwyCF12vo_nbXm5p-i000N3J_",
-    "beta": "YOUR_BETA_FOLDER_ID_HERE",
-    "gamma": "YOUR_GAMMA_FOLDER_ID_HERE",
-    # Add more clients as needed
-}
+# Load database securely from Streamlit Secrets
+CLIENT_DATABASE = st.secrets["client_database"]
 
 # ============================================================================
 # STYLING - Hide Streamlit UI elements for embed-friendly widget appearance
