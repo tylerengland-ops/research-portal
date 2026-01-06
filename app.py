@@ -422,12 +422,12 @@ def main():
             with st.spinner("Analyzing complete dataset..."):
                 client = initialize_gemini()
                 if client:
-                    # --- THE CORRECT CALL (With Memory) ---
+                    # Call the AI (With Memory)
                     response = generate_response(
                         client,
                         st.session_state.full_context,
                         prompt,
-                        st.session_state.messages,  # <--- Memory is passed here!
+                        st.session_state.messages,
                         st.session_state.custom_persona,
                         temperature=temperature
                     )
@@ -437,6 +437,11 @@ def main():
                     
                     # 2. Save to history
                     st.session_state.messages.append({"role": "assistant", "content": response})
+                    
+                    # 3. FORCE REFRESH (The Magic Fix)
+                    # This instantly reloads the page so the new message becomes part of the permanent history
+                    st.rerun()
+
                 else:
                     st.error("Failed to initialize AI model. Please check your configuration.")
 
