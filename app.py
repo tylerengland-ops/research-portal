@@ -414,15 +414,25 @@ def main():
                         st.session_state.custom_persona,  # <--- Add a comma here
                         temperature=temperature           # <--- Add this new line
                     )
-                    # 1. Show the response nicely
-                    st.markdown(response_text)
-                    
-                    # 2. Add a COPY button right below it
-                    st.code(response_text, language=None) 
-                    # Note: st.code has a built-in copy button in the top right corner!
-                    # Setting language=None makes it look like plain text.
 
-                    # 3. Save to history
+                    if client:
+                    # 1. Generate the answer (and name it 'response')
+                    response = generate_response(
+                        client,
+                        st.session_state.full_context,
+                        prompt,
+                        st.session_state.custom_persona,
+                        temperature=temperature
+                    )
+                    
+                    # 2. Show the text
+                    st.markdown(response)
+                    
+                    # 3. Add the Copy Button (using 'response')
+                    st.caption("Copy response:")
+                    st.code(response, language=None)
+
+                    # 4. Save to history
                     st.session_state.messages.append({"role": "assistant", "content": response})
                 else:
                     st.error("Failed to initialize AI model. Please check your configuration.")
