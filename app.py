@@ -238,7 +238,7 @@ def generate_dataset_title(client, context_preview: str) -> str:
     try:
         prompt = f"""
         Analyze the following research text snippet and generate a specific, professional, 
-        and concise Title (3-5 words max) that describes this dataset.
+        and concise Title (3-6 words max) that describes this dataset.
         Do not use quotes or markdown bolding or asterisks.
         
         TEXT SNIPPET:
@@ -409,7 +409,7 @@ def main():
     st.markdown(f"""
 <div class="status-indicator">
 <h3 style="margin: 0 0 8px 0; font-size: 1.2em; color: #1f1f1f;">{st.session_state.dataset_title}</h3>
-<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.4;">
+<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.0;">
 <strong>Database:</strong> {st.session_state.file_count} files | 
 <strong>Context:</strong> {len(st.session_state.full_context):,} chars
 <br>
