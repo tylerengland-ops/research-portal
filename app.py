@@ -342,6 +342,8 @@ def main():
         st.session_state.messages = []
     if 'custom_persona' not in st.session_state:
         st.session_state.custom_persona = ""
+    if 'query_count' not in st.session_state:
+        st.session_state.query_count = 0
     
     # Authentication
     if not st.session_state.authenticated:
@@ -413,37 +415,47 @@ def main():
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
         
-        # Display the User's Message immediately
         with st.chat_message("user"):
             st.markdown(prompt)
         
-        # Generate AI response
-        with st.chat_message("assistant"):
-            with st.spinner("Analyzing complete dataset..."):
-                client = initialize_gemini()
-                if client:
-                    # Call the AI (With Memory)
-                    response = generate_response(
-                        client,
-                        st.session_state.full_context,
-                        prompt,
-                        st.session_state.messages,
-                        st.session_state.custom_persona,
-                        temperature=temperature
-                    )
-                    
-                    # 1. Show the response nicely
-                    st.markdown(response)
-                    
-                    # 2. Save to history
-                    st.session_state.messages.append({"role": "assistant", "content": response})
-                    
-                    # 3. FORCE REFRESH (The Magic Fix)
-                    # This instantly reloads the page so the new message becomes part of the permanent history
-                    st.rerun()
-
-                else:
-                    st.error("Failed to initialize AI model. Please check your configuration.")
+        # --- SMART LIMIT LOGIC ---
+        # 1. Define the limit specifically for the 'demo' user
+        DEMO_LIMIT = 15
+        is_demo_user = (st.session_state.client_id == "demo")
+        limit_reached = False
+        
+        # 2. Check if this specific user has hit the limit
+        if is_demo_user and st.session_state.query_count >= DEMO_LIMIT:
+            limit_reached = True
+            
+        # 3. Enforce the limit
+        if limit_reached:
+            with st.chat_message("assistant"):
+                st.error(f"🔒 Demo Limit Reached ({DEMO_LIMIT}/{DEMO_LIMIT}). Please contact us for full access.")
+        else:
+            # Generate AI response (Normal flow)
+            with st.chat_message("assistant"):
+                with st.spinner("Analyzing complete dataset..."):
+                    client = initialize_gemini()
+                    if client:
+                        response = generate_response(
+                            client,
+                            st.session_state.full_context,
+                            prompt,
+                            st.session_state.messages,
+                            st.session_state.custom_persona,
+                            temperature=temperature
+                        )
+                        
+                        st.markdown(response)
+                        st.session_state.messages.append({"role": "assistant", "content": response})
+                        
+                        # Increment counter
+                        st.session_state.query_count += 1
+                        
+                        st.rerun()
+                    else:
+                        st.error("Failed to initialize AI model. Please check you configuration.")
 
 if __name__ == "__main__":
     main()
