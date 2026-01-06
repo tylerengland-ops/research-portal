@@ -363,7 +363,7 @@ def main():
     # Status indicator
     st.markdown(f"""
         <div class="status-indicator">
-            <h4>✅ Connected to {st.session_state.client_id.upper()} Database</h4>
+            <h4>✅ Connected to Database</h4>
             <p>Analyzed {st.session_state.file_count} files | Context size: {len(st.session_state.full_context):,} characters.   (Note: Exploratory tool—verify critical data.) </p>
         </div>
     """, unsafe_allow_html=True)
