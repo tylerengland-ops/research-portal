@@ -415,8 +415,8 @@ def main():
                         temperature=temperature           # <--- Add this new line
                     )
 
-                if client:
-                    # 1. Generate the answer (and name it 'response')
+               if client:
+                    # 1. Generate the answer
                     response = generate_response(
                         client,
                         st.session_state.full_context,
@@ -425,14 +425,10 @@ def main():
                         temperature=temperature
                     )
                     
-                    # 2. Show the text
+                    # 2. Show the response nicely (Just once!)
                     st.markdown(response)
                     
-                    # 3. Add the Copy Button (using 'response')
-                    st.caption("Copy response:")
-                    st.code(response, language=None)
-
-                    # 4. Save to history
+                    # 3. Save to history
                     st.session_state.messages.append({"role": "assistant", "content": response})
                 else:
                     st.error("Failed to initialize AI model. Please check your configuration.")
