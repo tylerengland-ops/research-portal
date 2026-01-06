@@ -359,8 +359,13 @@ def main():
     # Status indicator
     st.markdown(f"""
         <div class="status-indicator">
-            <h4>✅ Connected to Database</h4>
-            <p>Analyzed {st.session_state.file_count} files | Context size: {len(st.session_state.full_context):,} characters.   (Note: Exploratory tool—verify critical data.) </p>
+            <p>
+                <strong>Database:</strong> {st.session_state.file_count} files | 
+                <strong>Context:</strong> {len(st.session_state.full_context):,} characters
+            </p>
+            <p style="margin-top: 8px; opacity: 0.8; font-size: 0.9em;">
+                <em>⚠️Important Note: Exploratory tool—verify critical data. This proprietary model is designed to be thorough and may take a few moments per query.</em>
+            </p>
         </div>
     """, unsafe_allow_html=True)
     
