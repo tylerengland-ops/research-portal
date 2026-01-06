@@ -239,7 +239,7 @@ def generate_dataset_title(client, context_preview: str) -> str:
         prompt = f"""
         Analyze the following research text snippet and generate a specific, professional, 
         and concise Title (3-7 words max) that describes this dataset.
-        Do not use quotes or markdown bolding.
+        Do not use quotes or markdown bolding or asterisks.
         
         TEXT SNIPPET:
         {context_preview[:5000]}
