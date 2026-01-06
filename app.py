@@ -415,7 +415,7 @@ def main():
                         temperature=temperature           # <--- Add this new line
                     )
 
-                    if client:
+                if client:
                     # 1. Generate the answer (and name it 'response')
                     response = generate_response(
                         client,
