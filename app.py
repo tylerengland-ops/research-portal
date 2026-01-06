@@ -233,6 +233,27 @@ def initialize_gemini():
         st.error(f"Failed to initialize AI model: {str(e)}")
         return None
 
+def generate_dataset_title(client, context_preview: str) -> str:
+    """
+    Generates a short, punchy 3-5 word title based on a preview of the data.
+    """
+    try:
+        # We only look at the first 5,000 characters to be fast
+        prompt = f"""
+        Analyze the following research text snippet and generate a specific, professional, 
+        and concise Title (3-7 words max) that describes this dataset.
+        Examples: "Nike Gen Z Consumer Trends", "EV Battery Market Analysis 2025".
+        
+        TEXT SNIPPET:
+        {context_preview[:5000]}
+        
+        TITLE:"""
+        
+        response = client.generate_content(prompt)
+        return response.text.strip().replace('"', '') # Remove quotes if AI adds them
+    except:
+        return "Research Dataset Analysis" # Fallback if AI fails
+
 def generate_response(client, full_context: str, user_query: str, chat_history: list, custom_persona: str = "", temperature: float = 0.2):
     """
     Generate a response using the selected Gemini model, including chat history.
@@ -350,19 +371,28 @@ def main():
         st.session_state.custom_persona = ""
     if 'query_count' not in st.session_state:
         st.session_state.query_count = 0
+    if 'dataset_title' not in st.session_state:
+        st.session_state.dataset_title = "Research Analysis Portal"
     
-    # Authentication
+    # Authentication & Data Loading
     if not st.session_state.authenticated:
         client_id = authenticate_client()
         if client_id:
             st.session_state.client_id = client_id
             st.session_state.authenticated = True
             
-            # Load client data
-            with st.spinner("Loading your research data..."):
+            with st.spinner("Loading research data..."):
+                # 1. Download the text
                 full_context, file_count = load_client_data(client_id)
                 st.session_state.full_context = full_context
                 st.session_state.file_count = file_count
+                
+                # 2. Generate the Dynamic Title (The New Part)
+                temp_client = initialize_gemini()
+                if temp_client and full_context:
+                    st.session_state.dataset_title = generate_dataset_title(temp_client, full_context)
+                else:
+                    st.session_state.dataset_title = "Research Analysis Portal"
             
             st.rerun()
         else:
@@ -379,12 +409,17 @@ def main():
     # Status indicator
     st.markdown(f"""
         <div class="status-indicator">
-            <p>
+            <h3 style="margin: 0 0 8px 0; font-size: 1.2em; color: #1f1f1f;">
+                {st.session_state.dataset_title}
+            </h3>
+            
+            <p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.4;">
                 <strong>Database:</strong> {st.session_state.file_count} files | 
-                <strong>Context:</strong> {len(st.session_state.full_context):,} characters
-            </p>
-            <p style="margin-top: 8px; opacity: 0.8; font-size: 0.9em;">
-                <em>⚠️Note: Exploratory tool—verify critical data. This chat is designed to be thorough and may take a few moments per request.</em>
+                <strong>Context:</strong> {len(st.session_state.full_context):,} chars
+                <br>
+                <span style="opacity: 0.85; font-style: italic;">
+                    ⚠️ Note: Exploratory tool—verify critical data. Thorough analysis may take a few moments.
+                </span>
             </p>
         </div>
     """, unsafe_allow_html=True)
