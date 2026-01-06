@@ -364,7 +364,7 @@ def main():
                 <strong>Context:</strong> {len(st.session_state.full_context):,} characters
             </p>
             <p style="margin-top: 8px; opacity: 0.8; font-size: 0.9em;">
-                <em>⚠️Important Note: Exploratory tool—verify critical data. This proprietary model is designed to be thorough and may take a few moments per query.</em>
+                <em>⚠️Important Note: Exploratory tool—verify critical data. This proprietary model is designed to be thorough and may take a few moments per request.</em>
             </p>
         </div>
     """, unsafe_allow_html=True)
