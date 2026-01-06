@@ -388,7 +388,7 @@ def main():
         # -----------------------
 
     # Chat interface
-    st.subheader("💬 Ask Questions About Research Data")
+    st.subheader("💬 Ask Questions About The Data")
     
     # Display chat history
     for message in st.session_state.messages:
