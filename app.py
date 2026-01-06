@@ -410,8 +410,10 @@ def main():
     
     # Chat input
     if prompt := st.chat_input("Ask a question about the research data..."):
-        # Add user message to chat
+        # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
+        
+        # Display the User's Message immediately
         with st.chat_message("user"):
             st.markdown(prompt)
         
@@ -420,29 +422,20 @@ def main():
             with st.spinner("Analyzing complete dataset..."):
                 client = initialize_gemini()
                 if client:
+                    # --- THE CORRECT CALL (With Memory) ---
                     response = generate_response(
                         client,
                         st.session_state.full_context,
                         prompt,
-                        st.session_state.messages,  # <--- NEW: Passing the memory!
-                        st.session_state.custom_persona,
-                        temperature=temperature
-                    )
-
-                if client:
-                    # 1. Generate the answer
-                    response = generate_response(
-                        client,
-                        st.session_state.full_context,
-                        prompt,
+                        st.session_state.messages,  # <--- Memory is passed here!
                         st.session_state.custom_persona,
                         temperature=temperature
                     )
                     
-                    # 2. Show the response nicely (Just once!)
+                    # 1. Show the response nicely
                     st.markdown(response)
                     
-                    # 3. Save to history
+                    # 2. Save to history
                     st.session_state.messages.append({"role": "assistant", "content": response})
                 else:
                     st.error("Failed to initialize AI model. Please check your configuration.")
