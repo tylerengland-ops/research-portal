@@ -4,8 +4,13 @@ A multi-tenant Streamlit application for analyzing qualitative research transcri
 using Gemini 1.5 Pro's large context window.
 """
 
-from dotenv import load_dotenv
-load_dotenv()
+# --- SAFE IMPORT BLOCK ---
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass # If we are on the cloud and dotenv is missing, just skip it!
+# -------------------------
 import streamlit as st
 import os
 import json
