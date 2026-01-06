@@ -234,15 +234,12 @@ def initialize_gemini():
         return None
 
 def generate_dataset_title(client, context_preview: str) -> str:
-    """
-    Generates a short, punchy 3-5 word title based on a preview of the data.
-    """
+    """Generates a short, punchy 3-5 word title."""
     try:
-        # We only look at the first 5,000 characters to be fast
         prompt = f"""
         Analyze the following research text snippet and generate a specific, professional, 
         and concise Title (3-7 words max) that describes this dataset.
-        Examples: "Nike Gen Z Consumer Trends", "EV Battery Market Analysis 2025".
+        Do not use quotes or markdown bolding.
         
         TEXT SNIPPET:
         {context_preview[:5000]}
@@ -250,9 +247,10 @@ def generate_dataset_title(client, context_preview: str) -> str:
         TITLE:"""
         
         response = client.generate_content(prompt)
-        return response.text.strip().replace('"', '') # Remove quotes if AI adds them
+        # Clean up the response (Remove quotes and asterisks)
+        return response.text.strip().replace('"', '').replace('*', '').replace('#', '') 
     except:
-        return "Research Dataset Analysis" # Fallback if AI fails
+        return "Research Dataset Analysis"
 
 def generate_response(client, full_context: str, user_query: str, chat_history: list, custom_persona: str = "", temperature: float = 0.2):
     """
@@ -407,22 +405,20 @@ def main():
     st.title("Research Analysis Portal")
     
     # Status indicator
+    # Note: The HTML string is flushed left to prevent "Code Block" rendering issues
     st.markdown(f"""
-        <div class="status-indicator">
-            <h3 style="margin: 0 0 8px 0; font-size: 1.2em; color: #1f1f1f;">
-                {st.session_state.dataset_title}
-            </h3>
-            
-            <p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.4;">
-                <strong>Database:</strong> {st.session_state.file_count} files | 
-                <strong>Context:</strong> {len(st.session_state.full_context):,} chars
-                <br>
-                <span style="opacity: 0.85; font-style: italic;">
-                    ⚠️ Note: Exploratory tool—verify critical data. Thorough analysis may take a few moments.
-                </span>
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
+<div class="status-indicator">
+<h3 style="margin: 0 0 8px 0; font-size: 1.2em; color: #1f1f1f;">{st.session_state.dataset_title}</h3>
+<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.4;">
+<strong>Database:</strong> {st.session_state.file_count} files | 
+<strong>Context:</strong> {len(st.session_state.full_context):,} chars
+<br>
+<span style="opacity: 0.85; font-style: italic;">
+⚠️ Note: Exploratory tool—verify critical data. Thorough analysis may take a few moments.
+</span>
+</p>
+</div>
+""", unsafe_allow_html=True)
     
     # Optional: Custom persona training
     with st.expander("⚙️ Advanced Settings (Optional)"):
