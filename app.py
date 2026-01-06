@@ -354,17 +354,17 @@ def main():
     
 
     # Main application interface
-    # 1. Display your branded logo
+    # 1. Display branded logo
     st.image("Color logo with background.png", width=70)  # <--- Change filename/width as needed
 
-    # 2. Title (I removed the emoji since you have a logo now)
+    # 2. Title 
     st.title("Research Analysis Portal")
     
     # Status indicator
     st.markdown(f"""
         <div class="status-indicator">
             <h4>✅ Connected to {st.session_state.client_id.upper()} Database</h4>
-            <p>Analyzed {st.session_state.file_count} files | Context size: {len(st.session_state.full_context):,} characters</p>
+            <p>Analyzed {st.session_state.file_count} files | Context size: {len(st.session_state.full_context):,} characters.   (Note: Exploratory tool—verify critical data.) </p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -388,7 +388,7 @@ def main():
         # -----------------------
 
     # Chat interface
-    st.subheader("💬 Ask Questions About Your Research")
+    st.subheader("💬 Ask Questions About Research Data")
     
     # Display chat history
     for message in st.session_state.messages:
@@ -396,7 +396,7 @@ def main():
             st.markdown(message["content"])
     
     # Chat input
-    if prompt := st.chat_input("Ask a question about your research data..."):
+    if prompt := st.chat_input("Ask a question about the research data..."):
         # Add user message to chat
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
