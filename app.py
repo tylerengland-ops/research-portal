@@ -1,7 +1,7 @@
 """
 Full-Context Research Mining Portal
 A multi-tenant Streamlit application for analyzing qualitative research transcripts
-using Gemini 1.5 Pro's large context window.
+using Gemini's large context window.
 """
 
 # --- SAFE IMPORT BLOCK ---
@@ -414,7 +414,15 @@ def main():
                         st.session_state.custom_persona,  # <--- Add a comma here
                         temperature=temperature           # <--- Add this new line
                     )
-                    st.markdown(response)
+                    # 1. Show the response nicely
+                    st.markdown(response_text)
+                    
+                    # 2. Add a COPY button right below it
+                    st.code(response_text, language=None) 
+                    # Note: st.code has a built-in copy button in the top right corner!
+                    # Setting language=None makes it look like plain text.
+
+                    # 3. Save to history
                     st.session_state.messages.append({"role": "assistant", "content": response})
                 else:
                     st.error("Failed to initialize AI model. Please check your configuration.")
