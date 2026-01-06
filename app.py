@@ -38,10 +38,16 @@ def apply_custom_styling():
     """Apply custom CSS to create a clean, widget-like interface"""
     st.markdown("""
         <style>
-        /* Hide Streamlit branding */
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
+        /* 1. Hide the Streamlit Header (The colorful bar at top) */
         header {visibility: hidden;}
+        
+        /* 2. Hide the "Made with Streamlit" Footer */
+        .stApp > header {display: none;}
+        footer {visibility: hidden;}
+        #MainMenu {visibility: hidden;} /* This hides the hamburger menu */
+        
+        /* 3. Aggressively hide the specific footer container */
+        .stFooter {display: none;}
         
         /* Clean container styling */
         .stApp {
