@@ -408,8 +408,8 @@ def main():
     # Note: The HTML string is flushed left to prevent "Code Block" rendering issues
     st.markdown(f"""
 <div class="status-indicator">
-<h3 style="margin: 0 0 8px 0; font-size: 1.2em; color: #1f1f1f;">{st.session_state.dataset_title}</h3>
-<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.0;">
+<h3 style="margin: 0 0 2px 0; font-size: 1.2em; color: #1f1f1f;">{st.session_state.dataset_title}</h3>
+<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.4;">
 <strong>Database:</strong> {st.session_state.file_count} files | 
 <strong>Context:</strong> {len(st.session_state.full_context):,} chars
 <br>
