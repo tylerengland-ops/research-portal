@@ -227,11 +227,11 @@ def initialize_gemini():
         st.error(f"Failed to initialize AI model: {str(e)}")
         return None
 
-def generate_response(client, full_context: str, user_query: str, custom_persona: str = "", temperature: float = 0.2):
+def generate_response(client, full_context: str, user_query: str, chat_history: List[Dict], custom_persona: str = "", temperature: float = 0.2):
     """
-    Generate a response using the selected Gemini model and temperature.
+    Generate a response using the selected Gemini model, including chat history.
     """
-    # 1. Build the Persona (Using your EXACT improved instructions)
+    # 1. Build the Persona
     base_persona = """You are an expert Research Analyst. You have access to the COMPLETE dataset.
     CRITICAL INSTRUCTIONS:
     - Scan the ENTIRE text for counts.
@@ -246,22 +246,31 @@ def generate_response(client, full_context: str, user_query: str, custom_persona
     else:
         system_persona = base_persona
     
-    # 2. Build the Prompt
+    # 2. Format Chat History (The Memory)
+    # We skip the last message because that is the current user_query which we add at the end
+    history_text = ""
+    for msg in chat_history[:-1]: 
+        role = "User" if msg["role"] == "user" else "Research Analyst"
+        history_text += f"{role}: {msg['content']}\n\n"
+
+    # 3. Build the Prompt
     prompt = f"""{system_persona}
 
 === COMPLETE RESEARCH DATA ===
 {full_context}
 
-=== USER QUESTION ===
+=== CONVERSATION HISTORY ===
+{history_text}
+
+=== CURRENT USER QUESTION ===
 {user_query}
 """
     
     try:
-        # 3. Configure the "Creativity" (Temperature)
-        # This tells the AI how "creative" vs "strict" to be
+        # 4. Configure the "Creativity" (Temperature)
         config = genai.types.GenerationConfig(temperature=temperature)
 
-        # 4. Send to AI
+        # 5. Send to AI
         response = client.generate_content(prompt, generation_config=config)
         return response.text
 
@@ -412,8 +421,9 @@ def main():
                         client,
                         st.session_state.full_context,
                         prompt,
-                        st.session_state.custom_persona,  # <--- Add a comma here
-                        temperature=temperature           # <--- Add this new line
+                        st.session_state.messages,  # <--- NEW: Passing the memory!
+                        st.session_state.custom_persona,
+                        temperature=temperature
                     )
 
                 if client:
