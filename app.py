@@ -80,6 +80,13 @@ def apply_custom_styling():
             padding: 10px;
             margin: 5px 0;
         }
+        /* ... existing styles ... */
+        
+        /* 4. Remove massive top whitespace */
+        .block-container {
+            padding-top: 1rem;   /* Default is usually 6rem! */
+            padding-bottom: 1rem;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -398,11 +405,21 @@ def main():
     
 
     # Main application interface
-    # 1. Display branded logo
-    st.image("Q360 Logo.png", width=70)  # <--- Change filename/width as needed
-
-    # 2. Title 
-    st.title("Research Analysis Portal")
+    # Header Layout: Logo + Title on the same line
+    # The [1, 7] ratio gives a small slot for the logo and a wide slot for text
+    col_logo, col_text = st.columns([1, 15]) 
+    
+    with col_logo:
+        # Logo with reduced width to fit the line
+        st.image("Q360 Logo.png", width=55) 
+         
+    with col_text:
+        # Custom HTML Title to force zero margin and align perfectly with logo
+        st.markdown("""
+            <h1 style='margin: 0; padding-top: 8px; font-size: 2rem; border: none;'>
+                Research Analysis Portal
+            </h1>
+        """, unsafe_allow_html=True)
     
     # Status indicator
     # Note: The HTML string is flushed left to prevent "Code Block" rendering issues
