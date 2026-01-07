@@ -238,7 +238,8 @@ def generate_dataset_title(client, context_preview: str) -> str:
     try:
         prompt = f"""
         Analyze the following research text snippet and generate a specific, professional, 
-        and concise Title (3-6 words max) that describes this dataset.
+        and concise Title (3-7 words max) that describes this dataset. 
+        State whether it is primarily survey research, or primarily interview research.
         Do not use quotes or markdown bolding or asterisks.
         
         TEXT SNIPPET:
