@@ -57,7 +57,7 @@ def apply_custom_styling():
         /* Status indicator styling */
         .status-indicator {
             background-color: #f0f2f6;
-            padding: 12px;
+            padding: 8px;
             border-radius: 8px;
             margin-bottom: 20px;
             border-left: 4px solid #4CAF50;
@@ -239,7 +239,7 @@ def generate_dataset_title(client, context_preview: str) -> str:
         prompt = f"""
         Analyze the following research text snippet and generate a specific, professional, 
         and concise Title (3-7 words max) that describes this dataset. 
-        State whether it is primarily survey research, or primarily interview research.
+        State whether it is primarily survey research, or primarily interview research, or mix of survey and interview research.
         Do not use quotes or markdown bolding or asterisks.
         
         TEXT SNIPPET:
@@ -410,7 +410,7 @@ def main():
     st.markdown(f"""
 <div class="status-indicator">
 <h3 style="margin: 0 0 1px 0; font-size: 1.2em; color: #1f1f1f;">{st.session_state.dataset_title}</h3>
-<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.4;">
+<p style="margin: 0; font-size: 0.85em; color: #555; line-height: 1.2;">
 <strong>Database:</strong> {st.session_state.file_count} files | 
 <strong>Context:</strong> {len(st.session_state.full_context):,} chars
 <br>
