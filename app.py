@@ -271,7 +271,12 @@ def generate_response(client, full_context: str, user_query: str, chat_history: 
     - If you cannot find info, state that.
     - If asked for a count, you MUST scan the ENTIRE text to find EVERY instance.
     - Do not estimate.
-    - List the specific quotes or participants if possible to verify your count."""
+    - List the specific quotes or participants if possible to verify your count.
+    FORMATTING RULES:
+    - Do NOT use LaTeX formatting (no dollar signs $).
+    - Do NOT format Participant IDs or numbers as math equations.
+    - Use standard Markdown only (bold ** or italic *).
+    - Keep all font styling consistent."""
 
     if custom_persona:
         system_persona = f"{base_persona}\n\nADDITIONAL CONTEXT:\n{custom_persona}"
