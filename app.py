@@ -431,7 +431,7 @@ def main():
 <strong>Context:</strong> {len(st.session_state.full_context):,} chars
 <br>
 <span style="opacity: 0.85; font-style: italic;">
-⚠️ Note: Exploratory tool—verify critical data. Thorough analysis may take a few moments.
+⚠️ Note: Exploratory tool—verify critical data. Thorough analysis may take a few minutes.
 </span>
 </p>
 </div>
