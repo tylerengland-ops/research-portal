@@ -397,12 +397,22 @@ def main():
                 st.session_state.full_context = full_context
                 st.session_state.file_count = file_count
                 
-                # 2. Generate the Dynamic Title (The New Part)
-                temp_client = initialize_gemini()
-                if temp_client and full_context:
-                    st.session_state.dataset_title = generate_dataset_title(temp_client, full_context)
+                # --- NEW: Manual Title Overrides (SECURE VERSION) ---
+                # We fetch the dictionary from secrets so the IDs are not in public code
+                custom_titles = st.secrets.get("client_titles", {})
+                
+                # Check if we have a manual title for this client
+                if client_id in custom_titles:
+                    st.session_state.dataset_title = custom_titles[client_id]
+                
+                # If not, let the AI generate it (Default)
                 else:
-                    st.session_state.dataset_title = "Research Analysis Portal"
+                    temp_client = initialize_gemini()
+                    if temp_client and full_context:
+                        st.session_state.dataset_title = generate_dataset_title(temp_client, full_context)
+                    else:
+                        st.session_state.dataset_title = "Research Analysis Portal"
+                # -----------------------------------
             
             st.rerun()
         else:
