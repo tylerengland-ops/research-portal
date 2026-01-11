@@ -2,9 +2,9 @@ name: Wake Up Streamlit
 
 on:
   schedule:
-    # Runs at minute 0 past every hour (Every 60 mins)
-    - cron: '0 * * * *'
-  workflow_dispatch: # Allows you to run it manually to test
+    # The syntax '*/15' means "Run every 15 minutes"
+    - cron: '*/15 * * * *'
+  workflow_dispatch: 
 
 jobs:
   wake_app:
@@ -12,4 +12,6 @@ jobs:
     steps:
       - name: Poke App
         run: |
-          curl -I "https://q360insights.streamlit.app/"
+          # The -I flag fetches the header only (lighter request)
+          # The -L flag follows redirects (important for Streamlit)
+          curl -I -L "https://q360insights.streamlit.app/"
