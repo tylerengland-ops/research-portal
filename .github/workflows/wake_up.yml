@@ -2,8 +2,9 @@ name: Wake Up Streamlit
 
 on:
   schedule:
-    # The syntax '*/15' means "Run every 15 minutes"
-    - cron: '*/15 * * * *'
+    # Runs every 12 hours (e.g., 12:00 AM and 12:00 PM)
+    # This prevents the app from ever reaching the 24-hour sleep limit.
+    - cron: '0 */12 * * *'
   workflow_dispatch: 
 
 jobs:
