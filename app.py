@@ -23,6 +23,42 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import docx
 
+import os
+import toml # Make sure 'toml' is in your requirements.txt
+
+# --- RAILWAY SECRETS SETUP ---
+# This automatically creates the secrets.toml file from Railway variables
+if not os.path.exists(".streamlit/secrets.toml"):
+    os.makedirs(".streamlit", exist_ok=True)
+    
+    secrets_dict = {}
+    
+    # 1. Client Database
+    # We grab the raw string from Railway and parse it as JSON
+    if "CLIENT_DATABASE" in os.environ:
+        import json
+        try:
+            secrets_dict["client_database"] = json.loads(os.environ["CLIENT_DATABASE"])
+        except Exception as e:
+            print(f"Error parsing CLIENT_DATABASE: {e}")
+
+    # 2. Google API Key
+    if "GOOGLE_API_KEY" in os.environ:
+        secrets_dict["google_key"] = os.environ["GOOGLE_API_KEY"]
+        
+    # 3. Client Titles (If you added this feature)
+    if "CLIENT_TITLES" in os.environ:
+        import json
+        try:
+            secrets_dict["client_titles"] = json.loads(os.environ["CLIENT_TITLES"])
+        except:
+            pass
+
+    # Write the file so st.secrets can find it
+    with open(".streamlit/secrets.toml", "w") as f:
+        toml.dump(secrets_dict, f)
+# -----------------------------
+
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
