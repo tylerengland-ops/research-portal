@@ -566,7 +566,7 @@ def main():
         else:
             # Generate AI response (Normal flow)
             with st.chat_message("assistant"):
-                with st.spinner("Analyzing complete dataset..."):
+                with st.spinner("Analyzing complete dataset. This may take a few moments..."):
                     client = initialize_gemini()
                     if client:
                         response = generate_response(
