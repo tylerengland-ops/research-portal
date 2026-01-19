@@ -1,5 +1,5 @@
 # 1. Use a lightweight Python version
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # 2. Set the working directory inside the server
 WORKDIR /app
