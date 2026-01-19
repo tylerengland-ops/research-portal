@@ -2,9 +2,9 @@ name: Wake Up Streamlit
 
 on:
   schedule:
-    # Runs every 12 hours (e.g., 12:00 AM and 12:00 PM)
-    # This prevents the app from ever reaching the 24-hour sleep limit.
-    - cron: '0 */12 * * *'
+    # Runs at 00:00 UTC every 3rd day
+    # (e.g., 1st, 4th, 7th, 10th of the month)
+    - cron: '0 0 */3 * *'
   workflow_dispatch: 
 
 jobs:
@@ -13,6 +13,5 @@ jobs:
     steps:
       - name: Poke App
         run: |
-          # The -I flag fetches the header only (lighter request)
-          # The -L flag follows redirects (important for Streamlit)
-          curl -I -L "https://q360insights.streamlit.app/"
+          # Updated to point to your new Railway App
+          curl -I -L "https://q360insights.up.railway.app/"
