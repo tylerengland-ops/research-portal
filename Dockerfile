@@ -1,22 +1,18 @@
-# 1. Use a lightweight Python version
+# Use Python 3.11 to fix those "End of Life" warnings
 FROM python:3.11-slim
 
-# 2. Set the working directory inside the server
+# Set the working directory
 WORKDIR /app
 
-# 3. Copy your specific files into the server
-COPY requirements.txt ./
-COPY app.py ./
-COPY .streamlit ./.streamlit
-# Copy any other folders you need, e.g., images:
-# COPY images ./images 
+# COPY EVERYTHING from GitHub into the server
+# (This ensures app.py, requirements.txt, AND your logo are all copied)
+COPY . .
 
-# 4. Install your libraries
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Open the port Railway expects
+# Open the port
 EXPOSE 8501
 
-# 6. The Command to run the app
-# Note: We use $PORT provided by Railway
-CMD streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
+# Run the app
+CMD streamlit run app.py --server.port=8501 --server.address=0.0.0.0
