@@ -26,37 +26,49 @@ import docx
 import os
 import toml # Make sure 'toml' is in your requirements.txt
 
-# --- RAILWAY SECRETS SETUP ---
-# This automatically creates the secrets.toml file from Railway variables
-if not os.path.exists(".streamlit/secrets.toml"):
-    os.makedirs(".streamlit", exist_ok=True)
-    
-    secrets_dict = {}
-    
-    # 1. Client Database
-    # We grab the raw string from Railway and parse it as JSON
-    if "CLIENT_DATABASE" in os.environ:
-        import json
-        try:
-            secrets_dict["client_database"] = json.loads(os.environ["CLIENT_DATABASE"])
-        except Exception as e:
-            print(f"Error parsing CLIENT_DATABASE: {e}")
+# --- RAILWAY SECRETS SETUP (DEBUG VERSION) ---
+import os
+import toml
+import json
 
-    # 2. Google API Key
-    if "GOOGLE_API_KEY" in os.environ:
-        secrets_dict["google_key"] = os.environ["GOOGLE_API_KEY"]
-        
-    # 3. Client Titles (If you added this feature)
-    if "CLIENT_TITLES" in os.environ:
-        import json
-        try:
-            secrets_dict["client_titles"] = json.loads(os.environ["CLIENT_TITLES"])
-        except:
-            pass
+# 1. Force the folder to exist
+if not os.path.exists(".streamlit"):
+    os.makedirs(".streamlit")
 
-    # Write the file so st.secrets can find it
-    with open(".streamlit/secrets.toml", "w") as f:
-        toml.dump(secrets_dict, f)
+# 2. Print what Railway is sending us (Check logs for this line!)
+print("🔍 DEBUG: Available Env Vars:", [k for k in os.environ.keys() if "CLIENT" in k or "GOOGLE" in k])
+
+secrets_dict = {}
+
+# 3. CLIENT DATABASE
+if "CLIENT_DATABASE" in os.environ:
+    print("✅ Found CLIENT_DATABASE")
+    try:
+        secrets_dict["client_database"] = json.loads(os.environ["CLIENT_DATABASE"])
+    except Exception as e:
+        print(f"❌ Error parsing CLIENT_DATABASE: {e}")
+        secrets_dict["client_database"] = []
+else:
+    print("⚠️ WARNING: CLIENT_DATABASE variable is MISSING in Railway!")
+    secrets_dict["client_database"] = []
+
+# 4. GOOGLE KEY
+if "GOOGLE_API_KEY" in os.environ:
+    secrets_dict["google_key"] = os.environ["GOOGLE_API_KEY"]
+else:
+    print("⚠️ WARNING: GOOGLE_API_KEY is MISSING!")
+
+# 5. SERVICE ACCOUNT
+if "GOOGLE_SERVICE_ACCOUNT_JSON" in os.environ:
+    try:
+        secrets_dict["google_service_account"] = json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
+    except Exception as e:
+        print(f"❌ Error parsing SERVICE ACCOUNT: {e}")
+
+# 6. Write the file
+with open(".streamlit/secrets.toml", "w") as f:
+    toml.dump(secrets_dict, f)
+    print("📁 Secrets file written successfully.")
 # -----------------------------
 
 # ============================================================================
