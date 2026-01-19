@@ -40,35 +40,48 @@ print("🔍 DEBUG: Available Env Vars:", [k for k in os.environ.keys() if "CLIEN
 
 secrets_dict = {}
 
-# 3. CLIENT DATABASE
+# --- RAILWAY SECRETS SETUP ---
 if "CLIENT_DATABASE" in os.environ:
-    print("✅ Found CLIENT_DATABASE")
+    # 1. Create the .streamlit directory if missing
+    if not os.path.exists(".streamlit"):
+        os.makedirs(".streamlit")
+    
+    secrets_dict = {}
+
+    # 2. CLIENT DATABASE (List of Clients)
     try:
         secrets_dict["client_database"] = json.loads(os.environ["CLIENT_DATABASE"])
     except Exception as e:
-        print(f"❌ Error parsing CLIENT_DATABASE: {e}")
+        print(f"❌ ERROR parsing CLIENT_DATABASE: {e}")
         secrets_dict["client_database"] = []
-else:
-    print("⚠️ WARNING: CLIENT_DATABASE variable is MISSING in Railway!")
-    secrets_dict["client_database"] = []
 
-# 4. GOOGLE KEY
-if "GOOGLE_API_KEY" in os.environ:
-    secrets_dict["google_key"] = os.environ["GOOGLE_API_KEY"]
-else:
-    print("⚠️ WARNING: GOOGLE_API_KEY is MISSING!")
+    # 3. CLIENT TITLES (The part we are fixing)
+    if "CLIENT_TITLES" in os.environ:
+        try:
+            secrets_dict["client_titles"] = json.loads(os.environ["CLIENT_TITLES"])
+            # Prints success to logs so we know it worked
+            print(f"✅ SUCCESS: Loaded titles for {secrets_dict['client_titles'].keys()}")
+        except Exception as e:
+            # Prints the error if it fails
+            print(f"❌ ERROR parsing CLIENT_TITLES: {e}")
+            secrets_dict["client_titles"] = {}
+    else:
+        print("⚠️ WARNING: CLIENT_TITLES variable missing in Railway")
 
-# 5. SERVICE ACCOUNT
-if "GOOGLE_SERVICE_ACCOUNT_JSON" in os.environ:
-    try:
-        secrets_dict["google_service_account"] = json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
-    except Exception as e:
-        print(f"❌ Error parsing SERVICE ACCOUNT: {e}")
+    # 4. GOOGLE API KEY
+    if "GOOGLE_API_KEY" in os.environ:
+        secrets_dict["google_key"] = os.environ["GOOGLE_API_KEY"]
+        
+    # 5. GOOGLE SERVICE ACCOUNT
+    if "GOOGLE_SERVICE_ACCOUNT_JSON" in os.environ:
+        try:
+            secrets_dict["google_service_account"] = json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"])
+        except Exception as e:
+            print(f"❌ ERROR parsing SERVICE ACCOUNT: {e}")
 
-# 6. Write the file
-with open(".streamlit/secrets.toml", "w") as f:
-    toml.dump(secrets_dict, f)
-    print("📁 Secrets file written successfully.")
+    # 6. SAVE TO FILE
+    with open(".streamlit/secrets.toml", "w") as f:
+        toml.dump(secrets_dict, f)
 # -----------------------------
 
 # ============================================================================
