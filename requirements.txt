@@ -1,6 +1,8 @@
 streamlit
-python-dotenv
 google-generativeai
+pandas
+toml
+python-dotenv
 google-auth
 google-auth-oauthlib
 google-auth-httplib2
