@@ -23,6 +23,9 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import docx
 
+# === PASTE THIS NEW LINE HERE ===
+from rate_limit import check_and_update_limit
+
 import os
 import toml # Make sure 'toml' is in your requirements.txt
 
@@ -549,44 +552,37 @@ def main():
         with st.chat_message("user"):
             st.markdown(prompt)
         
-        # --- SMART LIMIT LOGIC ---
-        # 1. Define the limit specifically for the 'demo' user
-        DEMO_LIMIT = 15
-        is_demo_user = (st.session_state.client_id == "demo")
-        limit_reached = False
+        # --- NEW RATE LIMIT CHECK ---
+        is_allowed, count, limit, period = check_and_update_limit(st.session_state.client_id)
         
-        # 2. Check if this specific user has hit the limit
-        if is_demo_user and st.session_state.query_count >= DEMO_LIMIT:
-            limit_reached = True
-            
-        # 3. Enforce the limit
-        if limit_reached:
-            with st.chat_message("assistant"):
-                st.error(f"🔒 Demo Limit Reached ({DEMO_LIMIT}/{DEMO_LIMIT}). Please contact us for full access.")
-        else:
-            # Generate AI response (Normal flow)
-            with st.chat_message("assistant"):
-                with st.spinner("Analyzing complete dataset. This may take a few moments..."):
-                    client = initialize_gemini()
-                    if client:
-                        response = generate_response(
-                            client,
-                            st.session_state.full_context,
-                            prompt,
-                            st.session_state.messages,
-                            st.session_state.custom_persona,
-                            temperature=temperature
-                        )
-                        
-                        st.markdown(response)
-                        st.session_state.messages.append({"role": "assistant", "content": response})
-                        
-                        # Increment counter
-                        st.session_state.query_count += 1
-                        
-                        st.rerun()
-                    else:
-                        st.error("Failed to initialize AI model. Please check you configuration.")
+        if not is_allowed:
+            period_msg = "this hour" if period == "hour" else "today"
+            st.error(f"⛔ Rate limit reached ({limit} requests {period_msg}). Please try again later.")
+            st.stop()
+        # -----------------------------
+
+        # Generate AI response (Normal flow - notice no 'else' is needed now)
+        with st.chat_message("assistant"):
+            with st.spinner("Analyzing complete dataset. This may take a few moments..."):
+                client = initialize_gemini()
+                if client:
+                    response = generate_response(
+                        client,
+                        st.session_state.full_context,
+                        prompt,
+                        st.session_state.messages,
+                        st.session_state.custom_persona,
+                        temperature=temperature
+                    )
+                    
+                    st.markdown(response)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    
+                    # We removed the manual query_count increment here because rate_limit.py handles it now
+                    
+                    st.rerun()
+                else:
+                    st.error("Failed to initialize AI model. Please check your configuration.")
 
 if __name__ == "__main__":
     main()
