@@ -1,6 +1,9 @@
 from datetime import datetime
 import streamlit as st
 
+# DEBUG: Verify the module is loading
+print("DEBUG: rate_limit.py module loaded")
+
 # This creates a shared dictionary that persists across all users
 # It lives in the server memory, not the user session
 @st.cache_resource
@@ -52,4 +55,4 @@ def check_and_update_limit(client_id):
     
     # Increment and allow
     tracker[storage_key] += 1
-    return True, tracker[storage_key], limit, period_type    
+    return True, tracker[storage_key], limit, period_type
