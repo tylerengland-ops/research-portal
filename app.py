@@ -543,6 +543,14 @@ def main():
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
+            
+            # --- NEW: Add Copy Button for AI Responses ---
+            if message["role"] == "assistant":
+                # Create a collapsed section to keep UI clean
+                with st.expander("📋 Copy Response", expanded=False):
+                    # st.code automatically has a copy button!
+                    st.code(message["content"], language='markdown')
+            # ---------------------------------------------
     
     # Chat input
     if prompt := st.chat_input("Ask a question about the research data..."):
